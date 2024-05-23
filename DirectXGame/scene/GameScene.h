@@ -7,7 +7,7 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-#include "DebugCamera.h"
+#include <vector>
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -39,25 +39,23 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+	std::vector < std::vector<WorldTransform*>> worldTransformBlocks_;
 	//テクスチャー
-	uint32_t textureHandle_ = 0;
-	Sprite* sprite_ = nullptr;
+	//uint32_t textureHandle_ = 0;
+	//Sprite* sprite_ = nullptr;
 	//3Dモデル
-	Model* model_ = nullptr;
-	WorldTransform worldTransform_;
+	Model* block_ = nullptr;
+	//WorldTransform worldTransform_;
 	ViewProjection viewProjection_;
 	//音声
 	uint32_t soundDatahandle_ = 0;
-	//デバックカメラ
-	DebugCamera* debugCamera_ = nullptr;
-
-
-
-	float inputfloat3[3] = {0, 0, 0};
+	//デバッグカメラ
+	bool isDebugCameraActive_ = false;
 
 	/// <summary>
 	/// ゲームシーン用

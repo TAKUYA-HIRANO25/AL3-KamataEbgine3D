@@ -1,10 +1,11 @@
 #pragma once
-
 #include "Matrix4x4.h"
 #include "Vector3.h"
 #include <d3d12.h>
 #include <type_traits>
 #include <wrl.h>
+#include <cmath>
+#include "myMash.h"
 
 // 定数バッファ用データ構造体
 struct ConstBufferDataWorldTransform {
@@ -51,6 +52,9 @@ public:
 	/// </summary>
 	/// <returns>定数バッファ</returns>
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetConstBuffer() const { return constBuffer_; }
+	
+	//ワールド行列関数
+	void UpdateMatrix();
 
 private:
 	// 定数バッファ

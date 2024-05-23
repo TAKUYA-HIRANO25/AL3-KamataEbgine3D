@@ -8,9 +8,13 @@
 
 GameScene::~GameScene() 
 {
-	delete sprite_;
-	delete model_;
-	delete debugCamera_;
+	delete block_;
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (WorldTransform* worldtransformBlock : worldTransformBlockLine) {
+			delete worldtransformBlock;
+		}
+	}
+	worldTransformBlocks_.clear();
 }
 
 void GameScene::Initialize() {
@@ -18,47 +22,48 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-	soundDatahandle_ = audio_->LoadWave("fanfare.wav");
-	//画像　音声
-	textureHandle_ = TextureManager::Load("mario.jpg");
-	sprite_ = Sprite::Create(textureHandle_, {100, 50});
-	model_ = Model::Create();
-	worldTransform_.Initialize();
+	// 画像　音声
+	//audio_->PlayWave(soundDatahandle_, true);
+	//textureHandle_ = TextureManager::Load("cube.jpg");
+	//ブロック
+	block_ = Model::Create();
+	//worldTransform_.Initialize();
 	viewProjection_.Initialize();
-	audio_->PlayWave(soundDatahandle_,true);
-	//デバックカメラ
-	debugCamera_ = new DebugCamera(1280, 780);
-	//ライン描画
-	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
+	const uint32_t kNumBlockVirtical = 10;
+	const uint32_t kNumBlockHorizontal = 20;
+	const float kBlockWidth = 2.0f;
+	const float kBlockHeight = 2.0f;
+	worldTransformBlocks_.resize(kNumBlockVirtical);
+	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
+	}
 
-	//軸方向
-	AxisIndicator::GetInstance()->SetVisible(true);
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
+	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
+		uint32_t count = 0;
+		for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
+			if (count % 2 == 0) {
+				worldTransformBlocks_[i][j] = new WorldTransform();
+				worldTransformBlocks_[i][j]->Initialize();
+				worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
+				worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
+			}
+			count++;
+		}
+	}
 }
 
 void GameScene::Update() {
-	/* Vector2 position = sprite_->GetPosition();
-	position.x += 2.0f;
-	position.y += 1.0f;
-	sprite_->SetPosition(position);
-	*/
-	if (input_->TriggerKey(DIK_SPACE)) {
-		audio_->StopWave(soundDatahandle_);
+	//ブロック
+	/*for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
+		worldTransformBlock->UpdateMatrix();
+	}*/
+	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
+			if (!worldTransformBlock)
+				continue;
+			worldTransformBlock->UpdateMatrix();
+		}
 	}
-	// デバックテキスト
-#ifdef DEBUG
-
-	ImGui::Begin("Debug1");
-	ImGui::Text("Kamata Tarou %d %d %d", 2050, 12, 31);
-	ImGui::InputFloat3("InputFloat3", inputfloat3);
-	ImGui::SliderFloat3("InputFloat3", inputfloat3, 0.0f, 1.0f);
-	ImGui::End();
-	ImGui::ShowDemoWindow();
-
-#endif // DEBUG
-
-	//デバックカメラ
-	debugCamera_->Update();
 }
 
 void GameScene::Draw() {
@@ -73,7 +78,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	sprite_->Draw();
+
+
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
@@ -88,9 +94,16 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
-
-	PrimitiveDrawer::GetInstance()->DrawLine3d({0, 0, 0}, {0, 10, 0}, {1.0f, 0.0f, 0.0f, 1.0f});
+	/* for (WorldTransform* worldTransformBlock : worldTransformBlocks_) {
+		block_->Draw(*worldTransformBlock, viewProjection_);
+	}*/
+	for (std::vector<WorldTransform*> worldTransformBlockH : worldTransformBlocks_) {
+		for (WorldTransform* worldTransformBlockW : worldTransformBlockH) {
+			if (!worldTransformBlockW)
+				continue;
+			block_->Draw(*worldTransformBlockW, viewProjection_);
+		}
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -108,3 +121,4 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+
