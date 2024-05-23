@@ -8,6 +8,7 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include <vector>
+#include"DebugCamera.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -56,7 +57,7 @@ private: // メンバ変数
 	uint32_t soundDatahandle_ = 0;
 	//デバッグカメラ
 	bool isDebugCameraActive_ = false;
-
+	DebugCamera* debugCamera_ = nullptr;
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
