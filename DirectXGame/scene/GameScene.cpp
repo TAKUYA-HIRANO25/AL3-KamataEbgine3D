@@ -3,6 +3,27 @@
 #include "myMath.h"
 #include <cassert>
 
+void GameScene::GenerateBlocks() { 
+	uint32_t numBlockVirtical = mapChipField_->GetNumBlockVirtical(); 
+	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
+
+	worldTransformBlocks_.resize(numBlockVirtical);
+	for (uint32_t i = 0; i < numBlockVirtical; i++) {
+		worldTransformBlocks_[i].resize(numBlockHorizontal);
+	}
+
+	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
+		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
+			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
+				WorldTransform* worldTransform = new WorldTransform();
+				worldTransform->Initialize();
+				worldTransformBlocks_[i][j] = worldTransform;
+				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
+			}
+		}
+	}
+}
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -19,6 +40,8 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 
 	delete modelSkydome_;
+
+	delete mapChipField_;
 }
 
 void GameScene::Initialize() {
@@ -48,17 +71,23 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
 	// 天球の初期化
 	skydome_->Initialize(modelSkydome_,&viewProjection_);
-
-
-
 	// 要素数
-	const uint32_t kNumBlockVirtical = 10;
-	const uint32_t kNumBlockHorizontal = 20;
+	
+	//const uint32_t kNumBlockVirtical = 10;
+	//const uint32_t kNumBlockHorizontal = 20;
+	
 	// ブロック1個分の横幅
-	const float kBlockWidth = 2.0f;
-	const float kBlockHeight = 2.0f;
+	
+	//const float kBlockWidth = 2.0f;
+	//const float kBlockHeight = 2.0f;
+	
+	//マップチップ
+	mapChipField_ = new MapChipField;
+	mapChipField_->LoadMapChipCsv("Resources/map.csv");
+	GenerateBlocks();
+
 	// 要素数を変更する
-	worldTransformBlocks_.resize(kNumBlockVirtical);
+	/* worldTransformBlocks_.resize(kNumBlockVirtical);
 
 	// キューブの生成
 	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
@@ -76,7 +105,7 @@ void GameScene::Initialize() {
 					worldTransformBlocks_[i][j] = nullptr;
 				}
 			}
-	}
+	}*/
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280,720);
