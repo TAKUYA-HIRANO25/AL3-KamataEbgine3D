@@ -62,8 +62,6 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player();
-	// 自キャラの初期化
-	player_->Initialize(model_, textureHandle_, &viewProjection_);
 
 	// 天球の生成
 	skydome_ = new Skydome();
@@ -85,27 +83,9 @@ void GameScene::Initialize() {
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	GenerateBlocks();
-
-	// 要素数を変更する
-	/* worldTransformBlocks_.resize(kNumBlockVirtical);
-
-	// キューブの生成
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-		worldTransformBlocks_[i].resize(kNumBlockHorizontal);
-	}
-
-	for (uint32_t i = 0; i < kNumBlockVirtical; ++i) {
-			for (uint32_t j = 0; j < kNumBlockHorizontal; ++j) {
-				if (j % 2 == (i%2)) {
-					worldTransformBlocks_[i][j] = new WorldTransform();
-					worldTransformBlocks_[i][j]->Initialize();
-					worldTransformBlocks_[i][j]->translation_.x = kBlockWidth * j;
-					worldTransformBlocks_[i][j]->translation_.y = kBlockHeight * i;
-				} else {
-					worldTransformBlocks_[i][j] = nullptr;
-				}
-			}
-	}*/
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1,19);
+	// 自キャラの初期化
+	player_->Initialize(model_,&viewProjection_,playerPosition);
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280,720);
