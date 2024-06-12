@@ -19,6 +19,7 @@ void Player::Initialize(Model* model, ViewProjection* viewProjection, const Vect
 }
 
 void Player::Update() {
+	worldTransform_.UpdateMatrix();
 	if (onGround_) {
 		Vector3 acceleration = {};
 		//横移動
@@ -71,7 +72,6 @@ void Player::Update() {
 	}
 
 	// 行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
 
 	worldTransform_.translation_.x += velocity_.x;
 	
