@@ -36,6 +36,9 @@ GameScene::~GameScene() {
 	}
 
 	worldTransformBlocks_.clear();
+	delete modelBlock_;
+
+	delete player_;
 
 	delete debugCamera_;
 
@@ -51,9 +54,9 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// ファイル名を指定してテクスチャを読み込む
-	textureHandle_ = TextureManager::Load("block.jpg");
+	textureHandle_ = TextureManager::Load("player/player.png");
 	// 3Dモデルの生成
-	model_ = Model::Create();
+	model_ = Model::CreateFromOBJ("player",true);
 	modelBlock_ = Model::Create();
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
@@ -83,9 +86,9 @@ void GameScene::Initialize() {
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	GenerateBlocks();
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(1,19);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3,17);
 	// 自キャラの初期化
-	player_->Initialize(model_,&viewProjection_,playerPosition);
+	player_->Initialize(model_,textureHandle_,&viewProjection_,playerPosition);
 
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280,720);
@@ -173,6 +176,8 @@ void GameScene::Draw() {
 	// 天球の描画
 	skydome_->Draw();
 
+	//プレイヤー
+	player_->Draw();
 
 	//縦横ブロック描画
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
