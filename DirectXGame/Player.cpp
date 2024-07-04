@@ -4,7 +4,7 @@
 #include <numbers>
 #include <algorithm>
 #include "myMath.h"
-
+#include "MathUilityForText.h"
 
 void Player::Initialize(Model* model, uint32_t textureHandle, ViewProjection* viewProjection, const Vector3& position) {
 	
