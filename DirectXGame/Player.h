@@ -26,6 +26,10 @@ public:
 	/// </summary>
 	void Draw();
 
+	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
+
+	const Vector3& GetVelocity() const { return velocity_; }
+
 private:
 	//移動
 	Vector3 velocity_ = {};
