@@ -31,12 +31,12 @@ public:
 	const ViewProjection& GetViewProjection() const { return viewProjection_; }
 
 private:
-	static inline const float kVelocityBiss = 0.5f;
-	static inline const float KInterpolationRate = 0.2f;
+	static inline const float kVelocityBiss = 30.0f;
+	static inline const float KInterpolationRate = 1.5f;
 	ViewProjection viewProjection_;
 	Player* target_ = nullptr;
 	Vector3 targetOffset_ = {0, 0, -15.0f};
 	Vector3 targetcoordinates;
 	Rect movableArea_ = {0, 100, 0, 100};
-
+	static inline const Rect Margin = {-3.0f, 3.0f, -4.0f, 4.0f};
 };

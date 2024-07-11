@@ -92,10 +92,10 @@ void GameScene::Initialize() {
 	// カメラ
 	cameraController_ = new CameraController;
 	cameraController_->Initialize();
-	//CameraController::Rect cameraArea = {12.0f, 100.0f - 12.0f, 6.0f, 6.0f};
 	cameraController_->SetTarget(player_);
-	//cameraController_->SetMovableArea(cameraArea);
 	cameraController_->Reset();
+	CameraController::Rect cameraArea = {12.0f, 100.0f - 12.0f, 6.0f, 6.0f};
+	cameraController_->SetMovableArea(cameraArea);
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280,720);
 }
@@ -144,8 +144,8 @@ void GameScene::Update() {
 	} else {
 		// ビュープロジェクション行列の更新と転送
 
-		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.matView = cameraController_->GetViewProjection().matView;
+		viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection;
 		viewProjection_.TransferMatrix();
 	}
 
