@@ -1,6 +1,6 @@
 #define NOMINMAX
-#include"cameraController.h"
-#include"Player.h"
+#include "cameraController.h"
+#include "Player.h"
 #include <algorithm>
 
 void CameraController::Initialize(){
@@ -14,14 +14,14 @@ void CameraController::Update(){
 
 	viewProjection_.translation_ = targetWorldTransform.translation_ + targetOffset_;
 
-	targetcoordinates = targetWorldTransform.translation_ + targetOffset_ + Vector3(kVelocityBiss,0,0);
+	//targetcoordinates = targetWorldTransform.translation_ + targetOffset_ + Vector3(kVelocityBiss,0,0);
 
-	viewProjection_.translation_ = Lerp(viewProjection_.translation_, targetcoordinates, KInterpolationRate);
+	//viewProjection_.translation_ = Lerp(viewProjection_.translation_, targetcoordinates, KInterpolationRate);
 
-	viewProjection_.translation_.x = std::min(viewProjection_.translation_.x, movableArea_.left);
-	viewProjection_.translation_.x = std::max(viewProjection_.translation_.x, movableArea_.right);
-	viewProjection_.translation_.y = std::min(viewProjection_.translation_.y, movableArea_.bottom);
-	viewProjection_.translation_.y = std::max(viewProjection_.translation_.y, movableArea_.top);
+	//viewProjection_.translation_.x = std::min(viewProjection_.translation_.x, movableArea_.left);
+	//viewProjection_.translation_.x = std::max(viewProjection_.translation_.x, movableArea_.right);
+	//viewProjection_.translation_.y = std::min(viewProjection_.translation_.y, movableArea_.bottom);
+	//viewProjection_.translation_.y = std::max(viewProjection_.translation_.y, movableArea_.top);
 
 	viewProjection_.UpdateMatrix();
 
