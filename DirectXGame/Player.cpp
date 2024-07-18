@@ -108,8 +108,8 @@ void Player::InputMove() {
 
 		velocity_.y = std::max(velocity_.y, -kLimitFallspeed);
 	}
-	if (velocity_.y < 1) {
-		if (worldTransform_.translation_.y <= 1.5f) {
+	if (velocity_.y < 0) {
+		if (worldTransform_.translation_.y <= 1.0f) {
 			landing = true;
 		}
 	}
@@ -119,12 +119,12 @@ void Player::InputMove() {
 	worldTransform_.translation_.z += velocity_.z;
 
 	if (onGround_) {
-		if (velocity_.y > 1.0) {
+		if (velocity_.y > 0.0f) {
 			onGround_ = false;
 		}
 	} else {
 		if (landing) {
-			worldTransform_.translation_.y = 1.5f;
+			worldTransform_.translation_.y = 1.0f;
 
 			velocity_.x *= (1.0f - kAcceleration);
 
@@ -165,29 +165,29 @@ void Player::CheckMapCollisionTop(CollisionMapInfo& info) {
 	//真上の当たり判定
 	bool hit = false;
 	//左上
-	MapChipField::IndexSet indexSet;
-	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
-	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	MapChipField::IndexSet TopIndexSet;
+	TopIndexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(TopIndexSet.xIndex, TopIndexSet.yIndex);
 
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
 
 	//右上
-	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
-	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+	TopIndexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(TopIndexSet.xIndex, TopIndexSet.yIndex);
 
 	if (mapChipType == MapChipType::kBlock) {
 		hit = true;
 	}
 
 	if (hit) {
-		// めり込みを排除する方向に移動量を設定する
+		// めり込みを排除する方向に移動量を設定
 		MapChipField::IndexSet indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + Vector3(0, +kHeight / 2.0f, 0));
 		// めり込み先ブロックの範囲矩形
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
 		info.velocity.y = std::max(0.0f, rect.bottom - worldTransform_.translation_.y - (+kHeight / 2.0f + kBlank));
-		// 天井に当たったことを記録する
+		// 天井に当たったことを記録
 		info.HeavenFlag = true;
 	}
 
@@ -197,7 +197,6 @@ void Player::CheckMapCollisionTop(CollisionMapInfo& info) {
 void Player::CollisionMove(const CollisionMapInfo& info) { 
 	//移動
 	worldTransform_.translation_ += info.velocity;
-
 }
 
 void Player::HitCeiling(const CollisionMapInfo& info) {

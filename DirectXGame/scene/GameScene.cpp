@@ -57,7 +57,7 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("player/player.png");
 	// 3Dモデルの生成
 	model_ = Model::CreateFromOBJ("player",true);
-	modelBlock_ = Model::Create();
+	modelBlock_ = Model::CreateFromOBJ("block",true);
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	// ビュープロジェクションの初期化
@@ -86,7 +86,7 @@ void GameScene::Initialize() {
 	mapChipField_ = new MapChipField;
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	GenerateBlocks();
-	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3,17);
+	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3,18);
 	// 自キャラの初期化
 	player_->Initialize(model_,textureHandle_,&viewProjection_,playerPosition);
 	player_->SetMapChipField(mapChipField_);
