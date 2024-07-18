@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "myMath.h"
 #include "MathUilityForText.h"
+#include "MapChipField.h"
 
 void Player::Initialize(Model* model, uint32_t textureHandle, ViewProjection* viewProjection, const Vector3& position) {
 	
@@ -22,6 +23,29 @@ void Player::Initialize(Model* model, uint32_t textureHandle, ViewProjection* vi
 }
 
 void Player::Update() {
+	InputMove();
+	
+	CollisionMapInfo collisionMapInfo;
+
+	collisionMapInfo.velocity = velocity_;
+
+	CheckMapColision(collisionMapInfo);
+
+	CollisionMove(collisionMapInfo);
+
+	HitCeiling(collisionMapInfo);
+
+	worldTransform_.UpdateMatrix();
+
+}
+
+void Player::Draw(){
+
+	// 3Dモデルを描画
+	model_->Draw(worldTransform_, *viewProjection_, textureHandle_);
+}
+
+void Player::InputMove() {
 	if (onGround_) {
 		// 移動
 		if (Input::GetInstance()->PushKey(DIK_RIGHT) || Input::GetInstance()->PushKey(DIK_LEFT)) {
@@ -58,7 +82,7 @@ void Player::Update() {
 			velocity_.x += acceleration.x;
 			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
 
-		// 振り向き
+			// 振り向き
 			if (turnTimer_ > 0.0f) {
 				turnTimer_ -= 1.0f / 60.0f;
 
@@ -83,8 +107,6 @@ void Player::Update() {
 		velocity_.y += -kGravityAcceleration;
 
 		velocity_.y = std::max(velocity_.y, -kLimitFallspeed);
-
-
 	}
 	if (velocity_.y < 1) {
 		if (worldTransform_.translation_.y <= 1.5f) {
@@ -100,8 +122,7 @@ void Player::Update() {
 		if (velocity_.y > 1.0) {
 			onGround_ = false;
 		}
-	} 
-	else {
+	} else {
 		if (landing) {
 			worldTransform_.translation_.y = 1.5f;
 
@@ -112,13 +133,78 @@ void Player::Update() {
 			onGround_ = true;
 		}
 	}
-
-	worldTransform_.UpdateMatrix();
-	worldTransform_.TransferMatrix();
 }
 
-void Player::Draw(){
+void Player::CheckMapColision(CollisionMapInfo& info) { 
+	CheckMapCollisionTop(info);
 
-	// 3Dモデルを描画
-	model_->Draw(worldTransform_, *viewProjection_, textureHandle_);
+}
+
+Vector3 Player::CornerPosition(const Vector3& center, Corner corner) { 
+	Vector3 offsetTable[NumCorner] = {
+	    {+kWidth / 2.0f, -kHeight / 2.0f, 0},
+        {-kWidth / 2.0f, -kHeight / 2.0f, 0},
+        {+kWidth / 2.0f, +kHeight / 2.0f, 0},
+        {-kWidth / 2.0f, +kHeight / 2.0f, 0}
+    };
+
+	return center + offsetTable[static_cast<uint32_t>(corner)];
+}
+
+void Player::CheckMapCollisionTop(CollisionMapInfo& info) { 
+	std::array<Vector3, NumCorner> positionsNew;
+	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
+		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.velocity, static_cast<Corner>(i));
+	}
+
+	if (info.velocity.y <= 0) {
+		return;
+	}
+
+	MapChipType mapChipType;
+	//真上の当たり判定
+	bool hit = false;
+	//左上
+	MapChipField::IndexSet indexSet;
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kLeftTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	//右上
+	indexSet = mapChipField_->GetMapChipIndexSetByPosition(positionsNew[kRightTop]);
+	mapChipType = mapChipField_->GetMapChipTypeByIndex(indexSet.xIndex, indexSet.yIndex);
+
+	if (mapChipType == MapChipType::kBlock) {
+		hit = true;
+	}
+
+	if (hit) {
+		// めり込みを排除する方向に移動量を設定する
+		MapChipField::IndexSet indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + Vector3(0, +kHeight / 2.0f, 0));
+		// めり込み先ブロックの範囲矩形
+		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
+		info.velocity.y = std::max(0.0f, rect.bottom - worldTransform_.translation_.y - (+kHeight / 2.0f + kBlank));
+		// 天井に当たったことを記録する
+		info.HeavenFlag = true;
+	}
+
+
+}
+
+void Player::CollisionMove(const CollisionMapInfo& info) { 
+	//移動
+	worldTransform_.translation_ += info.velocity;
+
+}
+
+void Player::HitCeiling(const CollisionMapInfo& info) {
+	// 天井に当たった
+	if (info.HeavenFlag) {
+		velocity_.y = 0;
+		// 位置修正
+		worldTransform_.translation_.y += info.velocity.y;
+	}
 }

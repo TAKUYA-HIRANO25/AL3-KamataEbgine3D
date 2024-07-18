@@ -3,7 +3,9 @@
 #include "WorldTransform.h"
 #include "Input.h"
 
-/// //向き
+class MapChipField;
+
+//向き
 enum class LRDirection {
 	kRight,
 	kLeft,
@@ -11,6 +13,22 @@ enum class LRDirection {
 
 class Player {
 public:
+	//マップとの当たり判定情報
+	struct CollisionMapInfo {
+		bool HeavenFlag = false;
+		bool landing = false;
+		bool WallFlag = false;
+		Vector3 velocity;
+	};
+	//角
+	enum Corner {
+		kRightBottom, // 右下
+		kLeftBottom,  // 左下
+		kRightTop,    // 右上
+		kLeftTop,     // 左上
+
+		NumCorner // 要素数
+	};
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -29,6 +47,27 @@ public:
 	const WorldTransform& GetWorldTransform() const { return worldTransform_; }
 
 	const Vector3& GetVelocity() const { return velocity_; }
+
+	void SetMapChipField(MapChipField* mapChipField) { mapChipField_ = mapChipField; };
+
+	void InputMove();
+
+	void CheckMapColision(CollisionMapInfo& info);
+
+	Vector3 CornerPosition(const Vector3& center, Corner corner);
+
+	void CheckMapCollisionTop(CollisionMapInfo& info);
+
+	//void CheckMapCollisionDown(CollisionMapInfo& info);
+
+	//void CheckMapCollisionRight(CollisionMapInfo& info);
+
+	//void CheckMapCollisionLeft(CollisionMapInfo& info);
+
+	void CollisionMove(const CollisionMapInfo& info);
+
+	void HitCeiling(const CollisionMapInfo& info);
+
 
 private:
 	//移動
@@ -57,6 +96,15 @@ private:
 	uint32_t textureHandle_ = 0u;
 
 	ViewProjection* viewProjection_ = nullptr;
+
+	//マップチップフィールド
+	MapChipField* mapChipField_ = nullptr;
+
+	//キャラの当たり判定
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
+
+	static inline const float kBlank = 0.01f;
 
 };
 
