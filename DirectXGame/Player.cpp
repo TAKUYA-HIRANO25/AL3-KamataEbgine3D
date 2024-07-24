@@ -153,6 +153,7 @@ Vector3 Player::CornerPosition(const Vector3& center, Corner corner) {
 
 void Player::CheckMapCollisionTop(CollisionMapInfo& info) { 
 	std::array<Vector3, NumCorner> positionsNew;
+
 	for (uint32_t i = 0; i < positionsNew.size(); ++i) {
 		positionsNew[i] = CornerPosition(worldTransform_.translation_ + info.velocity, static_cast<Corner>(i));
 	}

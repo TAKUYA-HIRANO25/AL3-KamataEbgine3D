@@ -72,17 +72,17 @@ public:
 private:
 	//移動
 	Vector3 velocity_ = {};
-	static inline const float kAcceleration = 0.1f;
-	static inline const float kAttenuation = 0.1f;
-	static inline const float kLimitRunSpeed = 0.2f;
+	static inline const float kAcceleration = 0.3f;
+	static inline const float kAttenuation = 0.3f;
+	static inline const float kLimitRunSpeed = 0.3f;
 
 	//ジャンプ
 	bool onGround_ = true;
 	bool landing = false;
 
-	static inline const float kGravityAcceleration = 0.5f;
+	static inline const float kGravityAcceleration = 0.3f;
 	static inline const float kLimitFallspeed = 0.5f;
-	static inline const float kJumpAccleration = 3.0f;
+	static inline const float kJumpAccleration = 1.5f;
 
 	float trunFirstRotationY = 0.0f;
 	float turnTimer_ = 0.0f;
