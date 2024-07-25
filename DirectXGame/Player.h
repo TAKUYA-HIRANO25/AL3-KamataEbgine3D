@@ -58,16 +58,15 @@ public:
 
 	void CheckMapCollisionTop(CollisionMapInfo& info);
 
-	//void CheckMapCollisionDown(CollisionMapInfo& info);
+	void CheckMapCollisionDown(CollisionMapInfo& info);
 
-	//void CheckMapCollisionRight(CollisionMapInfo& info);
+	void CheckMapCollisionRight(CollisionMapInfo& info);
 
-	//void CheckMapCollisionLeft(CollisionMapInfo& info);
+	void CheckMapCollisionLeft(CollisionMapInfo& info);
 
 	void CollisionMove(const CollisionMapInfo& info);
 
 	void HitCeiling(const CollisionMapInfo& info);
-
 
 private:
 	//移動
