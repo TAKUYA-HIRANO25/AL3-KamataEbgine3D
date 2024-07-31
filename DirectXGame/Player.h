@@ -72,12 +72,14 @@ public:
 
 	void Ground(const CollisionMapInfo& info);
 
+	void Wall(const CollisionMapInfo& info);
+
 private:
 	//移動
 	Vector3 velocity_ = {};
-	static inline const float kAcceleration = 0.3f;
+	static inline const float kAcceleration = 0.2f;
 	static inline const float kAttenuation = 0.5f;
-	static inline const float kLimitRunSpeed = 0.3f;
+	static inline const float kLimitRunSpeed = 0.1f;
 
 	//ジャンプ
 	bool onGround_ = true;
@@ -88,6 +90,8 @@ private:
 	static inline const float kJumpAccleration = 10.0f;
 
 	static inline const float kAttenuationLanding = 0.5f;
+
+	static inline const float kAttenuationWall = 0.5f;
 
 	static inline const float kSet = 0.15f;
 

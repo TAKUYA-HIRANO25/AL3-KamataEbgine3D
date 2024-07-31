@@ -36,6 +36,8 @@ void Player::Update() {
 
 	HitCeiling(collisionMapInfo);
 
+	Wall(collisionMapInfo);
+
 	Ground(collisionMapInfo);
 
 	PlayerTurning();
@@ -132,8 +134,8 @@ void Player::InputMove() {
 void Player::CheckMapColision(CollisionMapInfo& info) { 
 	CheckMapCollisionTop(info);
 	CheckMapCollisionDown(info);
-	//CheckMapCollisionRight(info);
-	//CheckMapCollisionLeft(info);
+	CheckMapCollisionRight(info);
+	CheckMapCollisionLeft(info);
 
 }
 
@@ -405,5 +407,11 @@ void Player::Ground(const CollisionMapInfo& info) {
 			//Y速度をゼロに
 			velocity_.y = 0.0f;
 		}
+	}
+}
+
+void Player::Wall(const CollisionMapInfo& info) { 
+	if (info.WallFlag) {
+		velocity_.x *= (1.0f - kAttenuationWall);
 	}
 }
