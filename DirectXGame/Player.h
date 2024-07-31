@@ -68,6 +68,8 @@ public:
 
 	void HitCeiling(const CollisionMapInfo& info);
 
+	void PlayerTurning();
+
 	void Ground(const CollisionMapInfo& info);
 
 private:
@@ -86,7 +88,8 @@ private:
 	static inline const float kJumpAccleration = 10.0f;
 
 	static inline const float kAttenuationLanding = 0.5f;
-	static inline const float kSet = 0.4f;
+
+	static inline const float kSet = 0.15f;
 
 	float trunFirstRotationY = 0.0f;
 	float turnTimer_ = 0.0f;

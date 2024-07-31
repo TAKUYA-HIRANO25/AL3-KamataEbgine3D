@@ -23,6 +23,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle, ViewProjection* vi
 }
 
 void Player::Update() {
+
 	InputMove();
 	
 	CollisionMapInfo collisionMapInfo = {};
@@ -36,6 +37,8 @@ void Player::Update() {
 	HitCeiling(collisionMapInfo);
 
 	Ground(collisionMapInfo);
+
+	PlayerTurning();
 
 	worldTransform_.UpdateMatrix();
 
@@ -83,17 +86,6 @@ void Player::InputMove() {
 
 			velocity_.x += acceleration.x;
 			velocity_.x = std::clamp(velocity_.x, -kLimitRunSpeed, kLimitRunSpeed);
-
-			// 振り向き
-			if (turnTimer_ > 0.0f) {
-				turnTimer_ -= 1.0f / 60.0f;
-
-				float destinationRotationYTable[] = {std::numbers::pi_v<float> / 2.0f, std::numbers::pi_v<float> * 3.0f / 2.0f};
-
-				float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
-
-				worldTransform_.rotation_.y = EaseInOut(destinationRotationY, trunFirstRotationY, turnTimer_ / kTimeTurn);
-			}
 
 		} else {
 			velocity_.x *= (1.0f - kAcceleration);
@@ -342,6 +334,25 @@ void Player::HitCeiling(const CollisionMapInfo& info) {
 	// 天井に当たった
 	if (info.HeavenFlag) {
 		velocity_.y = 0;
+	}
+}
+
+void Player::PlayerTurning() {
+
+	if (turnTimer_ > 0.0f) {
+		turnTimer_ -= 1.0f / 60.0f;
+
+		// 左右の自キャラ角度テーブル
+		float destinationRotationYTable[] = {std::numbers::pi_v<float> / 2.0f, std::numbers::pi_v<float> * 3.0f / 2.0f};
+		// 状態に応じた角度を取得する
+		float destinationRotationY = destinationRotationYTable[static_cast<uint32_t>(lrDirection_)];
+
+		// 補間の割合を計算（0から1までの値）
+		float t = (kTimeTurn - turnTimer_) / kTimeTurn;
+		t = std::clamp(t, 0.0f, 1.0f);
+
+		// 自キャラの角度を設定する
+		worldTransform_.rotation_.y = Lerp(trunFirstRotationY, destinationRotationY, t);
 	}
 }
 
