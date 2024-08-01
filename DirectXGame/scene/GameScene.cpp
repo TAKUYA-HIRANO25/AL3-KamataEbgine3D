@@ -28,6 +28,7 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
+	delete modelEnemy_;
 
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
@@ -58,21 +59,24 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	model_ = Model::CreateFromOBJ("player",true);
 	modelBlock_ = Model::CreateFromOBJ("block",true);
+	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	// ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	// 自キャラの生成
+	//自キャラの生成
 	player_ = new Player();
 
-	// 天球の生成
+	enemy_ = new Enemy();
+
+	//天球の生成
 	skydome_ = new Skydome();
-	// 天球3Dモデルの生成
+	//天球3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
-	// 天球の初期化
+	//天球の初期化
 	skydome_->Initialize(modelSkydome_,&viewProjection_);
-	// 要素数
+	//要素数
 	
 	//const uint32_t kNumBlockVirtical = 10;
 	//const uint32_t kNumBlockHorizontal = 20;
@@ -87,9 +91,12 @@ void GameScene::Initialize() {
 	mapChipField_->LoadMapChipCsv("Resources/map.csv");
 	GenerateBlocks();
 	Vector3 playerPosition = mapChipField_->GetMapChipPositionByIndex(3,18);
+	Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(15, 18);
 	// 自キャラの初期化
 	player_->Initialize(model_,textureHandle_,&viewProjection_,playerPosition);
 	player_->SetMapChipField(mapChipField_);
+	// 敵の初期化
+	enemy_->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 	// カメラ
 	cameraController_ = new CameraController;
 	cameraController_->Initialize();
@@ -107,7 +114,8 @@ void GameScene::Update() {
 
 	// 天球の更新
 	skydome_->Update();
-
+	// 敵キャラの更新
+	enemy_->Update();
 	// カメラの更新
 	cameraController_->Update();
 
@@ -184,11 +192,14 @@ void GameScene::Draw() {
 	// 自キャラの描画
 //	player_->Draw();
 
-	// 天球の描画
+	//天球の描画
 	skydome_->Draw();
 
 	//プレイヤー
 	player_->Draw();
+
+	//敵の描画
+	enemy_->Draw();
 
 	//縦横ブロック描画
 	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {

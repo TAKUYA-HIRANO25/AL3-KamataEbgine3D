@@ -13,6 +13,8 @@
 #include <vector>
 #include "MapChipField.h"
 #include"cameraController.h"
+#include "Enemy.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -57,6 +59,7 @@ private: // メンバ変数
 	// 3Dモデル
 	Model* model_ = nullptr;
 	Model* modelBlock_ = nullptr;
+	Model* modelEnemy_ = nullptr;
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
@@ -64,7 +67,8 @@ private: // メンバ変数
 
 	// 自キャラ
 	Player* player_ = nullptr;
-
+	//敵キャラ
+	Enemy* enemy_ = nullptr;
 	//マップチップフィールド
 	MapChipField* mapChipField_;
 	void GenerateBlocks();
