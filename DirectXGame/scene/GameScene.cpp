@@ -77,9 +77,6 @@ void GameScene::Initialize() {
 	//天球の初期化
 	skydome_->Initialize(modelSkydome_,&viewProjection_);
 
-	// テストパーティクル
-	deathParticles_ = new DeathParticles;
-	deathParticles_->Initialize(modelDeathParticles_, &viewProjection_, playerPosition);
 	//要素数
 	
 	//const uint32_t kNumBlockVirtical = 10;
@@ -106,6 +103,9 @@ void GameScene::Initialize() {
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 		enemies_.push_back(newEnemy);
 	}
+	// テストパーティクル
+	deathParticles_ = new DeathParticles;
+	deathParticles_->Initialize(modelDeathParticles_, &viewProjection_, playerPosition);
 	// カメラ
 	cameraController_ = new CameraController;
 	cameraController_->Initialize();
