@@ -29,7 +29,7 @@ GameScene::GameScene() {}
 GameScene::~GameScene() {
 	delete model_;
 	enemies_.clear();
-
+	delete modelDeathParticles_;
 	for (std::vector<WorldTransform*>& worldTransformBlockLine : worldTransformBlocks_) {
 		for (WorldTransform* worldTransformBlock : worldTransformBlockLine) {
 			delete worldTransformBlock;
@@ -60,6 +60,8 @@ void GameScene::Initialize() {
 	model_ = Model::CreateFromOBJ("player",true);
 	modelBlock_ = Model::CreateFromOBJ("block",true);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
+	modelDeathParticles_ = Model::CreateFromOBJ("deathParticle", true);
+
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	// ビュープロジェクションの初期化
@@ -74,6 +76,10 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("sphere", true);
 	//天球の初期化
 	skydome_->Initialize(modelSkydome_,&viewProjection_);
+
+	// テストパーティクル
+	deathParticles_ = new DeathParticles;
+	deathParticles_->Initialize(modelDeathParticles_, &viewProjection_, playerPosition);
 	//要素数
 	
 	//const uint32_t kNumBlockVirtical = 10;
@@ -118,11 +124,13 @@ void GameScene::Update() {
 	// 天球の更新
 	skydome_->Update();
 	// 敵キャラの更新
-	// 敵キャラの更新
 	for (Enemy* enemy : enemies_) {
 		enemy->Update();
 	}
 
+	if (deathParticles_) {
+		deathParticles_->Update();
+	}
 	CheckAllCollision();
 
 	// カメラの更新
@@ -209,6 +217,10 @@ void GameScene::Draw() {
 	//敵の描画
 	for (Enemy* enemy : enemies_) {
 		enemy->Draw();
+	}
+
+	if (deathParticles_) {
+		deathParticles_->Draw();
 	}
 
 	//縦横ブロック描画
