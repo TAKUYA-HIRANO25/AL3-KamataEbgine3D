@@ -2,8 +2,11 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "Input.h"
+#include "MathUilityForText.h"
 
 class MapChipField;
+
+class Enemy;
 
 //向き
 enum class LRDirection {
@@ -74,6 +77,12 @@ public:
 
 	void Wall(const CollisionMapInfo& info);
 
+	Vector3 GetWorldPosition();
+
+	AABB GetAABB();
+
+	void OnCollision(const Enemy* enemy);
+
 private:
 	//移動
 	Vector3 velocity_ = {};
@@ -116,6 +125,8 @@ private:
 	static inline const float kHeight = 0.8f;
 
 	static inline const float kBlank = 0.01f;
+
+	 static inline const float kJumpAcceleration = 1.0f;
 
 };
 

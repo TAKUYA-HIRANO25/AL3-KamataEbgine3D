@@ -1,6 +1,8 @@
 #include "WorldTransform.h"
 #include "Model.h"
-#include "Vector3.h"
+#include "MathUilityForText.h"
+
+class Player;
 
 class Enemy {
 public:
@@ -18,6 +20,12 @@ public:
 	///描画
 	///</summary>
 	void Draw();
+
+	Vector3 GetWorldPosition();
+
+	AABB HitAABB();
+
+	void OnCollision(const Player* player);
 
 private:
 	//ワールド変換データ
@@ -40,4 +48,8 @@ private:
 	static inline const float kWalkMotionTime = 1.0f;
 	//経過時間
 	float walkTimer_ = 0.0f;
+
+	static inline const float kWidth = 0.8f;
+	static inline const float kHeight = 0.8f;
+
 };
