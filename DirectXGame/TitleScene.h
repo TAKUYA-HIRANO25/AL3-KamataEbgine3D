@@ -35,8 +35,8 @@ private:
 	// 最後の角度
 	static inline const float TitlePositionEnd = -0.1f;
 
-	// アニメーションの周期となる時間
-	static inline const float TitleTime = 3.0f;
+	// アニメーションの周期
+	static inline const float TitleTime = 2.0f;
 
 	// 経過時間
 	float timer_ = 0.0f;
