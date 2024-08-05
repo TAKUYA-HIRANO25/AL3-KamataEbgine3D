@@ -83,6 +83,8 @@ public:
 
 	void OnCollision(const Enemy* enemy);
 
+	bool IsDead() const { return isDead_; }
+
 private:
 	//移動
 	Vector3 velocity_ = {};
@@ -127,6 +129,9 @@ private:
 	static inline const float kBlank = 0.01f;
 
 	 static inline const float kJumpAcceleration = 1.0f;
+
+	 // フラグ
+	 bool isDead_ = false;
 
 };
 
