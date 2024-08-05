@@ -156,6 +156,7 @@ void GameScene::Update() {
 			viewProjection_.matProjection = cameraController_->GetViewProjection().matProjection;
 			viewProjection_.TransferMatrix();
 		}
+		break;
 	case GameScene::Phase::kDeath:
 		// 天球の更新
 		skydome_->Update();
@@ -243,30 +244,55 @@ void GameScene::Draw() {
 //	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	// 自キャラの描画
 //	player_->Draw();
+	ChangePhase();
+	switch (phase_) {
+		// 生存
+	case GameScene::Phase::kPlay:
+		// 天球の描画
+		skydome_->Draw();
 
-	//天球の描画
-	skydome_->Draw();
+		// プレイヤー
+		player_->Draw();
 
-	//プレイヤー
-	player_->Draw();
-
-	//敵の描画
-	for (Enemy* enemy : enemies_) {
-		enemy->Draw();
-	}
-
-	if (deathParticles_) {
-		deathParticles_->Draw();
-	}
-
-	//縦横ブロック描画
-	for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
-		for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
-			if (!worldTransformBlockYoko)
-				continue;
-
-			modelBlock_->Draw(*worldTransformBlockYoko, viewProjection_);
+		// 敵の描画
+		for (Enemy* enemy : enemies_) {
+			enemy->Draw();
 		}
+
+		// 縦横ブロック描画
+		for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
+				if (!worldTransformBlockYoko)
+					continue;
+
+				modelBlock_->Draw(*worldTransformBlockYoko, viewProjection_);
+			}
+		}
+
+		break;
+	case GameScene::Phase::kDeath:
+		// 天球の描画
+		skydome_->Draw();
+
+		// 敵の描画
+		for (Enemy* enemy : enemies_) {
+			enemy->Draw();
+		}
+
+		if (deathParticles_) {
+			deathParticles_->Draw();
+		}
+
+		// 縦横ブロック描画
+		for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
+			for (WorldTransform* worldTransformBlockYoko : worldTransformBlockTate) {
+				if (!worldTransformBlockYoko)
+					continue;
+
+				modelBlock_->Draw(*worldTransformBlockYoko, viewProjection_);
+			}
+		}
+		break;
 	}
 
 	// 3Dオブジェクト描画後処理
