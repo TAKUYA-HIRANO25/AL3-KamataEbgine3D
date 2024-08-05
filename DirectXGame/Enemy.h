@@ -35,7 +35,7 @@ private:
 	ViewProjection* viewProjection_ = nullptr;
 
 	//歩行の速さ
-	static inline const float kWalkSpeed = 0.1f;
+	static inline const float kWalkSpeed = 0.01f;
 
 	//速度
 	Vector3 velocity_ = {};

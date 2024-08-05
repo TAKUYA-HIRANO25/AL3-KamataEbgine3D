@@ -54,6 +54,8 @@ public: // メンバ関数
 	bool IsCollision(const AABB& aabb1, const AABB& aabb2);
 
 	void ChangePhase();
+	
+	bool IsFinished() const { return finished_; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -106,4 +108,6 @@ private: // メンバ変数
 	};
 
 	Phase phase_;
+
+	bool finished_ = false;
 };

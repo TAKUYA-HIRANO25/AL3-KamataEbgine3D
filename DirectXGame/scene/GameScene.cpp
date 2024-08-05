@@ -3,27 +3,6 @@
 #include "myMath.h"
 #include <cassert>
 
-void GameScene::GenerateBlocks() { 
-	uint32_t numBlockVirtical = mapChipField_->GetNumBlockVirtical(); 
-	uint32_t numBlockHorizontal = mapChipField_->GetNumBlockHorizontal();
-
-	worldTransformBlocks_.resize(numBlockVirtical);
-	for (uint32_t i = 0; i < numBlockVirtical; i++) {
-		worldTransformBlocks_[i].resize(numBlockHorizontal);
-	}
-
-	for (uint32_t i = 0; i < numBlockVirtical; ++i) {
-		for (uint32_t j = 0; j < numBlockHorizontal; ++j) {
-			if (mapChipField_->GetMapChipTypeByIndex(j, i) == MapChipType::kBlock) {
-				WorldTransform* worldTransform = new WorldTransform();
-				worldTransform->Initialize();
-				worldTransformBlocks_[i][j] = worldTransform;
-				worldTransformBlocks_[i][j]->translation_ = mapChipField_->GetMapChipPositionByIndex(j, i);
-			}
-		}
-	}
-}
-
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -347,11 +326,17 @@ void GameScene::ChangePhase() {
 	case GameScene::Phase::kPlay:
 		if (player_->IsDead()) {
 			phase_ = Phase::kDeath;
-		}
-		break;
-	case GameScene::Phase::kDeath:
-		finished_ = true;
+			// 自キャラの座標を取得
+			const Vector3& deathParticlePosition = player_->GetWorldPosition();
 
+			deathParticles_ = new DeathParticles;
+			deathParticles_->Initialize(modelDeathParticles_, &viewProjection_, deathParticlePosition);
+		}
+			break;
+	case GameScene::Phase::kDeath:
+		if (deathParticles_ && deathParticles_->IsFinished()) {
+			finished_ = true;
+		}
 		break;
 	}
 }
