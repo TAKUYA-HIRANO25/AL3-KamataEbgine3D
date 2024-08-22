@@ -78,12 +78,12 @@ void GameScene::Initialize() {
 	player_->Initialize(model_,textureHandle_,&viewProjection_,playerPosition);
 	player_->SetMapChipField(mapChipField_);
 	// 敵の初期化
-	for (int32_t i = 0; i < 3; ++i) {
+	/* for (int32_t i = 0; i < 3; ++i) {
 		Enemy* newEnemy = new Enemy();
 		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(15 - i, 18 - i);
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 		enemies_.push_back(newEnemy);
-	}
+	}*/
 	// テストパーティクル
 	deathParticles_ = new DeathParticles;
 	deathParticles_->Initialize(modelDeathParticles_, &viewProjection_, playerPosition);
@@ -133,7 +133,7 @@ void GameScene::Update() {
 			}
 		}
 #ifdef _DEBUG
-		if (input_->TriggerKey(DIK_SPACE)) {
+		if (input_->TriggerKey(DIK_K)) {
 			if (isDebugCameraActive_ == true)
 				isDebugCameraActive_ = false;
 			else
@@ -255,9 +255,9 @@ void GameScene::Draw() {
 		player_->Draw();
 
 		// 敵の描画
-		for (Enemy* enemy : enemies_) {
-			enemy->Draw();
-		}
+		//for (Enemy* enemy : enemies_) {
+			//enemy->Draw();
+		//}
 
 		// 縦横ブロック描画
 		for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
