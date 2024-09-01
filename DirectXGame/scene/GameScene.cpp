@@ -40,6 +40,8 @@ void GameScene::Initialize() {
 
 	phase_ = Phase::kPlay;
 
+	soundDataHandle_ = audio_->LoadWave("ClearSE.mp3");
+
 	// ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("player/player.png");
 	// 3Dモデルの生成
@@ -84,15 +86,15 @@ void GameScene::Initialize() {
 	player_->Initialize(model_,textureHandle_,&viewProjection_,playerPosition);
 	player_->SetMapChipField(mapChipField_);
 	// 敵の初期化
-	for (int32_t i = 0; i < 3; ++i) {
+	for (int32_t i = 0; i < 5; ++i) {
 		Enemy* newEnemy = new Enemy();
-		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(15 - i, 18 - i);
+		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(16 + i * 5 + 2 , 18 - i * 2 );
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 		enemies_.push_back(newEnemy);
 	}
 	// ゴールの生成
 	goal_ = new Goal();
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(40, 9);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(40, 18);
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 	// テストパーティクル
 	deathParticles_ = new DeathParticles;
@@ -377,8 +379,8 @@ void GameScene::CheckAllCollision() {
 			player_->OnCollision2(goal_);
 			// 敵弾の衝突時コールバックを呼び出す
 			goal_->OnCollision(player_);
-			//modelDeathParticles_ = Model::CreateFromOBJ("Clear", true);
-			
+			modelDeathParticles_ = Model::CreateFromOBJ("clearparticle", true);
+			audio_->PauseWave(soundDataHandle_);
 		}
 	}
 
