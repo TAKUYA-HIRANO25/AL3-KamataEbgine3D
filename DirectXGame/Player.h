@@ -92,8 +92,8 @@ public:
 private:
 	//移動
 	Vector3 velocity_ = {};
-	static inline const float kAcceleration = 0.2f;
-	static inline const float kAttenuation = 0.5f;
+	static inline const float kAcceleration = 0.1f;
+	static inline const float kAttenuation = 0.3f;
 	static inline const float kLimitRunSpeed = 0.1f;
 
 	//ジャンプ
@@ -130,7 +130,7 @@ private:
 	static inline const float kWidth = 0.8f;
 	static inline const float kHeight = 0.8f;
 
-	static inline const float kBlank = 0.01f;
+	static inline const float kBlank = 0.04f;
 
 	 static inline const float kJumpAcceleration = 1.0f;
 
