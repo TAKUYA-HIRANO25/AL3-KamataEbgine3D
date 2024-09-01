@@ -277,7 +277,7 @@ void Player::CheckMapCollisionRight(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ + Vector3(+kWidth / 2.0f, 0, 0));
 		//めり込み先ブロックの範囲矩形
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-		info.velocity.x = std::min(info.velocity.x, rect.left - (worldTransform_.translation_.x + kWidth / 2.0f + kBlank));
+		info.velocity.x = std::min(0.0f, rect.left - (worldTransform_.translation_.x + kWidth / 2.0f + kBlank));
 		//壁に当たった
 		info.WallFlag = true;
 	}
@@ -320,7 +320,7 @@ void Player::CheckMapCollisionLeft(CollisionMapInfo& info) {
 		indexSet = mapChipField_->GetMapChipIndexSetByPosition(worldTransform_.translation_ - Vector3(kWidth / 2.0f, 0, 0));
 		//めり込み先ブロックの範囲矩形
 		MapChipField::Rect rect = mapChipField_->GetRectByIndex(indexSet.xIndex, indexSet.yIndex);
-		info.velocity.x = std::max(info.velocity.x, rect.right - (worldTransform_.translation_.x - kWidth / 2.0f - kBlank));
+		info.velocity.x = std::max(0.0f, rect.right - (worldTransform_.translation_.x - kWidth / 2.0f - kBlank));
 		//壁に当たった
 		info.WallFlag = true;
 	}
@@ -439,5 +439,11 @@ AABB Player::GetAABB() {
 void Player::OnCollision(const Enemy* enemy) {
 	(void)enemy;
 	
+	isDead_ = true;
+}
+
+void Player::OnCollision2(const Goal* goal) {
+	(void)goal;
+
 	isDead_ = true;
 }

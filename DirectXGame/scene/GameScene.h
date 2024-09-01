@@ -15,6 +15,7 @@
 #include"cameraController.h"
 #include "Enemy.h"
 #include "DeathParticles.h"
+#include "Goal.h"
 
 /// <summary>
 /// ゲームシーン
@@ -72,6 +73,7 @@ private: // メンバ変数
 	Model* modelBlock_ = nullptr;
 	Model* modelEnemy_ = nullptr;
 	Model* modelDeathParticles_ = nullptr;
+	Model* modelGoal_ = nullptr;
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
@@ -101,6 +103,8 @@ private: // メンバ変数
 	CameraController* cameraController_ = nullptr;
 	// デス時のパーティクル
 	DeathParticles* deathParticles_ = nullptr;
+	// ゴール
+	Goal* goal_ = nullptr;
 
 	enum class Phase {
 		kPlay,

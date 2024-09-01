@@ -25,6 +25,11 @@ GameScene::~GameScene() {
 	delete modelSkydome_;
 
 	delete mapChipField_;
+
+	delete modelGoal_;
+
+	delete goal_;
+
 }
 
 void GameScene::Initialize() {
@@ -42,6 +47,7 @@ void GameScene::Initialize() {
 	modelBlock_ = Model::CreateFromOBJ("block",true);
 	modelEnemy_ = Model::CreateFromOBJ("enemy", true);
 	modelDeathParticles_ = Model::CreateFromOBJ("deathParticle", true);
+	modelGoal_ = Model::CreateFromOBJ("goal", true);
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
@@ -78,12 +84,16 @@ void GameScene::Initialize() {
 	player_->Initialize(model_,textureHandle_,&viewProjection_,playerPosition);
 	player_->SetMapChipField(mapChipField_);
 	// 敵の初期化
-	/* for (int32_t i = 0; i < 3; ++i) {
+	for (int32_t i = 0; i < 3; ++i) {
 		Enemy* newEnemy = new Enemy();
 		Vector3 enemyPosition = mapChipField_->GetMapChipPositionByIndex(15 - i, 18 - i);
 		newEnemy->Initialize(modelEnemy_, &viewProjection_, enemyPosition);
 		enemies_.push_back(newEnemy);
-	}*/
+	}
+	// ゴールの生成
+	goal_ = new Goal();
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(20, 9);
+	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 	// テストパーティクル
 	deathParticles_ = new DeathParticles;
 	deathParticles_->Initialize(modelDeathParticles_, &viewProjection_, playerPosition);
@@ -112,6 +122,8 @@ void GameScene::Update() {
 		for (Enemy* enemy : enemies_) {
 			enemy->Update();
 		}
+
+		goal_->Updata();
 
 		CheckAllCollision();
 
@@ -254,10 +266,12 @@ void GameScene::Draw() {
 		// プレイヤー
 		player_->Draw();
 
+		goal_->Draw();
+
 		// 敵の描画
-		//for (Enemy* enemy : enemies_) {
-			//enemy->Draw();
-		//}
+		for (Enemy* enemy : enemies_) {
+			enemy->Draw();
+		}
 
 		// 縦横ブロック描画
 		for (std::vector<WorldTransform*> worldTransformBlockTate : worldTransformBlocks_) {
@@ -278,6 +292,8 @@ void GameScene::Draw() {
 		for (Enemy* enemy : enemies_) {
 			enemy->Draw();
 		}
+
+		goal_->Draw();
 
 		if (deathParticles_) {
 			deathParticles_->Draw();
@@ -345,6 +361,27 @@ void GameScene::CheckAllCollision() {
 		}
 	}
 #pragma endregion
+	{
+		// 判定1と2の座標
+		AABB aabb1, aabb2;
+
+		// 自キャラの座標
+		aabb1 = player_->GetAABB();
+
+		// 自キャラと手の弾全ての当たり判定
+		aabb2 = goal_->GetAABB();
+
+		// AABB同士の交差判定
+		if (IsCollision(aabb1, aabb2)) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player_->OnCollision2(goal_);
+			// 敵弾の衝突時コールバックを呼び出す
+			goal_->OnCollision(player_);
+			modelDeathParticles_ = Model::CreateFromOBJ("goalParticle", true);
+			
+		}
+	}
+
 }
 
 void GameScene::ChangePhase() {

@@ -8,6 +8,8 @@ class MapChipField;
 
 class Enemy;
 
+class Goal;
+
 //向き
 enum class LRDirection {
 	kRight,
@@ -83,6 +85,8 @@ public:
 
 	void OnCollision(const Enemy* enemy);
 
+	void OnCollision2(const Goal* goal);
+
 	bool IsDead() const { return isDead_; }
 
 private:
@@ -133,5 +137,6 @@ private:
 	 // フラグ
 	 bool isDead_ = false;
 
+	 bool isGoal_ = false;
 };
 
