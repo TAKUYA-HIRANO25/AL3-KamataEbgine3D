@@ -92,7 +92,7 @@ void GameScene::Initialize() {
 	}
 	// ゴールの生成
 	goal_ = new Goal();
-	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(20, 9);
+	Vector3 goalPosition = mapChipField_->GetMapChipPositionByIndex(40, 9);
 	goal_->Initialize(modelGoal_, &viewProjection_, goalPosition);
 	// テストパーティクル
 	deathParticles_ = new DeathParticles;
@@ -377,7 +377,7 @@ void GameScene::CheckAllCollision() {
 			player_->OnCollision2(goal_);
 			// 敵弾の衝突時コールバックを呼び出す
 			goal_->OnCollision(player_);
-			modelDeathParticles_ = Model::CreateFromOBJ("goalParticle", true);
+			//modelDeathParticles_ = Model::CreateFromOBJ("Clear", true);
 			
 		}
 	}
